@@ -1,120 +1,50 @@
-# WebContainer API Starter
+# React + TypeScript + Vite
 
-WebContainer API is a browser-based runtime for executing Node.js applications and operating system commands. It enables you to build applications that previously required a server running.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-WebContainer API is perfect for building interactive coding experiences. Among its most common use cases are production-grade IDEs, programming tutorials, or employee onboarding platforms.
+Currently, two official plugins are available:
 
-## How To
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-For an up-to-date documentation, please refer to [our documentation](https://webcontainers.io).
+## Expanding the ESLint configuration
 
-## Cross-Origin Isolation
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-WebContainer _requires_ [SharedArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer) to function. In turn, this requires your website to be [cross-origin isolated](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements). Among other things, the root document must be served with:
+- Configure the top-level `parserOptions` property like this:
 
-```
-Cross-Origin-Embedder-Policy: require-corp
-Cross-Origin-Opener-Policy: same-origin
-```
-
-You can check [our article](https://blog.stackblitz.com/posts/cross-browser-with-coop-coep/) on the subject and our [docs on browser support](https://developer.stackblitz.com/docs/platform/browser-support) for more details.
-
-## Serve over HTTPS
-
-Please note that your deployed page must be served over HTTPS. This is not necessary when developing locally, as `localhost` is exempt from some browser restrictions, but there is no way around it once you deploy to production.
-
-## Demo
-
-Check [the WebContainer API demo app](https://webcontainer.new).
-
-Here's an example `main.ts` file:
-
-```ts
-import { WebContainer } from "@webcontainer/api";
-
-const files: FileSystemTree = {
-  "index.js": {
-    file: {
-      contents: "",
+```js
+export default tseslint.config({
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ['./tsconfig.node.json', './tsconfig.app.json'],
+      tsconfigRootDir: import.meta.dirname,
     },
   },
-};
-
-let webcontainer: WebContainer;
-
-// add a textarea (the editor) and an iframe (a preview window) to the document
-document.querySelector("#app").innerHTML = `
-  <div class="container">
-    <div class="editor">
-      <textarea>I am a textarea</textarea>
-    </div>
-    <div class="preview">
-      <iframe></iframe>
-    </div>
-  </div>
-`;
-
-// the editor
-const textarea = document.querySelector("textarea");
-
-// the preview window
-const iframe = document.querySelector("iframe");
-
-window.addEventListener("load", async () => {
-  textarea.value = files["index.js"].file.contents;
-
-  textarea.addEventListener("input", (event) => {
-    const content = event.currentTarget.value;
-    webcontainer.fs.writeFile("/index.js", content);
-  });
-
-  // call only once
-  webcontainer = await WebContainer.boot();
-
-  await webcontainer.mount(files);
-
-  const exitCode = await installDependencies();
-
-  if (exitCode !== 0) {
-    throw new Error("Installation failed");
-  }
-
-  startDevServer();
-});
-
-async function installDependencies() {
-  // install dependencies
-  const installProcess = await webcontainer.spawn("npm", ["install"]);
-
-  installProcess.output.pipeTo(
-    new WritableStream({
-      write(data) {
-        console.log(data);
-      },
-    })
-  );
-
-  // wait for install command to exit
-  return installProcess.exit;
-}
-
-async function startDevServer() {
-  // run `npm run start` to start the express app
-  await webcontainer.spawn("npm", ["run", "start"]);
-
-  // wait for `server-ready` event
-  webcontainer.on("server-ready", (port, url) => {
-    iframe.src = url;
-  });
-}
+})
 ```
 
-## Troubleshooting
+- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
+- Optionally add `...tseslint.configs.stylisticTypeChecked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-Cookie blockers, either from third-party addons or built-in into the browser, can prevent WebContainer from running correctly. Check the `on('error')` event and our [docs](https://developer.stackblitz.com/docs/platform/third-party-blocker).
+```js
+// eslint.config.js
+import react from 'eslint-plugin-react'
 
-To troubleshoot other problems, check the [Troubleshooting page](https://webcontainers.io/guides/troubleshooting) in our docs.
-
-# License
-
-Copyright 2023 StackBlitz, Inc.
+export default tseslint.config({
+  // Set the react version
+  settings: { react: { version: '18.3' } },
+  plugins: {
+    // Add the react plugin
+    react,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended rules
+    ...react.configs.recommended.rules,
+    ...react.configs['jsx-runtime'].rules,
+  },
+})
+```
