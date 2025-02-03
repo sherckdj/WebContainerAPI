@@ -1,0 +1,12 @@
+email,password,role
+student1@example.com,SecurePass123,student
+instructor1@example.com,TeachPass456,instructor
+admin1@example.com,AdminPass789,admin
+
+# Example CSV Format
+# - email: Must be a valid email address
+# - password: Must be at least 6 characters
+# - role: Must be one of: student, instructor, admin
+#
+# Note: This is a sample template. Replace with real user data.
+# Delete these comment lines before using.
