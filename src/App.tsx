@@ -15,6 +15,8 @@ import { CourseGradebookPage } from './pages/CourseGradebookPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { supabase } from './lib/supabase';
+import { QuizPage } from "./pages/QuizPage";
+
 
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean | null>(null);
