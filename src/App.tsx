@@ -15,8 +15,6 @@ import { CourseGradebookPage } from './pages/CourseGradebookPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { supabase } from './lib/supabase';
-import { QuizPage } from "./pages/QuizPage";
-
 
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean | null>(null);
@@ -65,7 +63,6 @@ export function App() {
                 <Route path="gradebook" element={<CourseGradebookPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="users/:id" element={<UserProfilePage />} />
-                <Route path="quiz" element={<QuizPage />} />
               </Route>
             </>
           )}
