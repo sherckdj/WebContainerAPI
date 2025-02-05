@@ -65,6 +65,7 @@ export function App() {
                 <Route path="gradebook" element={<CourseGradebookPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="users/:id" element={<UserProfilePage />} />
+                <Route path="quiz" element={<QuizPage />} />
               </Route>
             </>
           )}
