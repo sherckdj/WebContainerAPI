@@ -1,6 +1,15 @@
-import { Button } from "@/components/ui";
+import Button from "../ui/Button"; // Fixed Import Path
 
-const QuestionList = ({ questions, removeQuestion }) => {
+interface Question {
+  text: string;
+}
+
+interface QuestionListProps {
+  questions: Question[];
+  removeQuestion: (index: number) => void;
+}
+
+const QuestionList: React.FC<QuestionListProps> = ({ questions, removeQuestion }) => {
   return (
     <div className="mt-4">
       <h2 className="text-xl font-bold">Questions</h2>
@@ -15,4 +24,5 @@ const QuestionList = ({ questions, removeQuestion }) => {
     </div>
   );
 };
+
 export default QuestionList;

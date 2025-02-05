@@ -1,31 +1,46 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../lib/supabase";
 import QuizForm from "../components/quizzes/QuizForm";
 import QuestionList from "../components/quizzes/QuestionList";
 import QuestionForm from "../components/quizzes/QuestionForm";
-import { Button } from "@/components/ui/button";
+import Button from "../components/ui/Button";
 
-const QuizCreationPage = () => {
+interface Course {
+  id: string;
+  name: string;
+}
+
+interface Quiz {
+  title: string;
+  description: string;
+  course_id: string;
+}
+
+interface Question {
+  text: string;
+}
+
+const QuizCreationPage: React.FC = () => {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState([]);
-  const [quiz, setQuiz] = useState({ title: "", description: "", course_id: "" });
-  const [questions, setQuestions] = useState([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [quiz, setQuiz] = useState<Quiz>({ title: "", description: "", course_id: "" });
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       const { data, error } = await supabase.from("courses").select("id, name");
       if (error) console.error(error);
-      else setCourses(data);
+      else setCourses(data as Course[]);
     };
     fetchCourses();
   }, []);
 
-  const addQuestion = (question) => {
+  const addQuestion = (question: Question) => {
     setQuestions([...questions, question]);
   };
 
-  const removeQuestion = (index) => {
+  const removeQuestion = (index: number) => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
